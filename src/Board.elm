@@ -10,47 +10,34 @@ type Color
     | White
 
 
-type PieceType
-    = Pawn
-    | Bishop
-    | Knight
-    | Rook
-    | Queen
-    | King
-
-
-type alias Piece =
-    { color : Color, variant : PieceType, row : Int, col : Int }
-
-
 type alias Square =
-    { color : Color }
+    Color
 
 
 type alias Row =
-    { squares : List Square }
+    List Square
 
 
 type alias Board =
-    { rows : List Row }
+    List Row
 
 
 flipColor : Square -> Square
 flipColor square =
-    case square.color of
+    case square of
         White ->
-            { color = Black }
+            Black
 
         Black ->
-            { color = White }
+            White
 
 
 flipRow : Row -> Row
 flipRow row =
-    { squares = List.map flipColor row.squares }
+    List.map flipColor row
 
 
-rowBuilder : Int -> Square -> List Square
+rowBuilder : Int -> Square -> Row
 rowBuilder size nextSquare =
     if size <= 0 then
         []
@@ -58,12 +45,14 @@ rowBuilder size nextSquare =
         nextSquare :: rowBuilder (size - 1) (flipColor nextSquare)
 
 
+whiteRow : Row
 whiteRow =
-    { squares = rowBuilder 8 { color = White } }
+    rowBuilder 8 White
 
 
+board : Board
 board =
-    { rows = boardBuilder 8 whiteRow }
+    boardBuilder 8 whiteRow
 
 
 boardBuilder : Int -> Row -> List Row
@@ -76,7 +65,7 @@ boardBuilder size nextRow =
 
 squareHtml : Square -> Html msg
 squareHtml square =
-    case square.color of
+    case square of
         White ->
             div [ class "square white" ] []
 
@@ -86,9 +75,9 @@ squareHtml square =
 
 rowHtml : Row -> Html msg
 rowHtml row =
-    div [ class "row" ] (List.map squareHtml row.squares)
+    div [ class "row" ] (List.map squareHtml row)
 
 
 boardHtml : Board -> Html msg
 boardHtml board =
-    div [] (List.map rowHtml board.rows)
+    div [] (List.map rowHtml board)
