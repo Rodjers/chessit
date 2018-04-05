@@ -13,3 +13,22 @@ img {
   margin: 20px 0;
   max-width: 200px;
 }
+
+.square {
+  display: inline-block;
+  height: 80px;
+  width: 80px;
+
+}
+
+.square.black {
+  background-color: black;
+}
+
+.square.white {
+  background-color: lightyellow;
+}
+
+.row {
+  font-size: 0
+}
