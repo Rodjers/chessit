@@ -1,61 +1,24 @@
 module Main exposing (..)
 
 import Html exposing (Html, text, div, h1, img)
-import Html.Attributes exposing (src, height, width, class, style)
+import Html.Attributes exposing (src, height, width, class, style, alt)
 import Board exposing (boardHtml, board)
-
-
-type Color
-    = Black
-    | White
-
-
-type PieceType
-    = Pawn
-    | Bishop
-    | Knight
-    | Rook
-    | Queen
-    | King
-
-
-type alias Piece =
-    { color : Color, variant : PieceType, row : Int, col : Int }
-
-
-pieceHtml : Piece -> Html Msg
-pieceHtml piece =
-    case piece.variant of
-        _ ->
-            img
-                [ class "piece"
-                , style (getPieceStyle piece)
-                , src "pieces/Chess_plt45.svg"
-                ]
-                []
-
-
-getPieceStyle : Piece -> List ( String, String )
-getPieceStyle piece =
-    [ ( "transform", "translate(" ++ getPosition piece.col ++ ", " ++ getPosition piece.row ++ ")" ) ]
-
-
-getPosition : Int -> String
-getPosition int =
-    toString ((int - 1) * 100) ++ "px"
-
+import Pieces exposing (pieces, pieceHtml, Piece)
 
 
 ---- MODEL ----
 
 
 type alias Model =
-    {}
+    { pieces : List Piece }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( {}, Cmd.none )
+    ( { pieces = pieces
+      }
+    , Cmd.none
+    )
 
 
 
@@ -64,6 +27,7 @@ init =
 
 type Msg
     = NoOp
+    | PieceLifted Piece
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -81,10 +45,7 @@ view model =
         [ h1 [] [ text "Get ready to chess!" ]
         , div
             [ style [ ( "display", "inline-block" ) ] ]
-            [ pieceHtml { color = White, variant = Pawn, row = 1, col = 1 }
-            , pieceHtml { color = Black, variant = Pawn, row = 2, col = 1 }
-            , boardHtml board
-            ]
+            (List.append (List.map pieceHtml model.pieces) (List.singleton (boardHtml board)))
         ]
 
 
