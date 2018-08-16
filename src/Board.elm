@@ -3,15 +3,18 @@ module Board exposing (..)
 import Html exposing (Html, text, div, h1, img)
 import Html.Attributes exposing (src, height, width, class)
 import List exposing (length)
+import Pieces exposing (Piece, pieces)
 
 
-type Color
+type SquareColor
     = Black
     | White
+    | Orange
+    | Red
 
 
 type alias Square =
-    Color
+    SquareColor
 
 
 type alias Row =
@@ -19,7 +22,9 @@ type alias Row =
 
 
 type alias Board =
-    List Row
+    { squares : List Row
+    , pieces : List Piece
+    }
 
 
 flipColor : Square -> Square
@@ -30,6 +35,9 @@ flipColor square =
 
         Black ->
             White
+
+        _ ->
+            square
 
 
 flipRow : Row -> Row
@@ -52,15 +60,17 @@ whiteRow =
 
 board : Board
 board =
-    boardBuilder 8 whiteRow
+    { squares = squareBuilder 8 whiteRow
+    , pieces = pieces
+    }
 
 
-boardBuilder : Int -> Row -> List Row
-boardBuilder size nextRow =
+squareBuilder : Int -> Row -> List Row
+squareBuilder size nextRow =
     if size <= 0 then
         []
     else
-        nextRow :: boardBuilder (size - 1) (flipRow nextRow)
+        nextRow :: squareBuilder (size - 1) (flipRow nextRow)
 
 
 squareHtml : Square -> Html msg
@@ -72,6 +82,12 @@ squareHtml square =
         Black ->
             div [ class "square black" ] []
 
+        Orange ->
+            div [ class "square orange" ] []
+
+        Red ->
+            div [ class "square red" ] []
+
 
 rowHtml : Row -> Html msg
 rowHtml row =
@@ -80,4 +96,4 @@ rowHtml row =
 
 boardHtml : Board -> Html msg
 boardHtml board =
-    div [] (List.map rowHtml board)
+    div [] (List.map rowHtml board.squares)

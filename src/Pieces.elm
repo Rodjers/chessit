@@ -4,7 +4,7 @@ import Html exposing (Html, text, div, h1, img)
 import Html.Attributes exposing (src, height, width, class, style)
 
 
-type Color
+type PieceColor
     = Black
     | White
 
@@ -24,7 +24,7 @@ type PieceStatus
 
 
 type alias Piece =
-    { color : Color
+    { color : PieceColor
     , variant : PieceType
     , row : Int
     , col : Int
@@ -51,7 +51,7 @@ pieces =
     , { id = "f2", color = White, variant = Pawn, row = 2, col = 6, status = Placed }
     , { id = "g2", color = White, variant = Pawn, row = 2, col = 7, status = Placed }
     , { id = "h2", color = White, variant = Pawn, row = 2, col = 8, status = Placed }
-    , { id = "a7", color = Black, variant = Rook, row = 7, col = 1, status = Placed }
+    , { id = "a7", color = Black, variant = Pawn, row = 7, col = 1, status = Placed }
     , { id = "b7", color = Black, variant = Pawn, row = 7, col = 2, status = Placed }
     , { id = "c7", color = Black, variant = Pawn, row = 7, col = 3, status = Placed }
     , { id = "d7", color = Black, variant = Pawn, row = 7, col = 4, status = Placed }

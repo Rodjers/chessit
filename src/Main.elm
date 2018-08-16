@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (Html, text, div, h1, img)
 import Html.Attributes exposing (src, height, width, class, style, alt)
-import Board exposing (boardHtml, board)
+import Board exposing (boardHtml, board, Board)
 import Pieces exposing (pieces, pieceHtml, Piece)
 
 
@@ -10,12 +10,12 @@ import Pieces exposing (pieces, pieceHtml, Piece)
 
 
 type alias Model =
-    { pieces : List Piece }
+    { board : Board }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { pieces = pieces
+    ( { board = board
       }
     , Cmd.none
     )
@@ -45,7 +45,7 @@ view model =
         [ h1 [] [ text "Get ready to chess!" ]
         , div
             [ style [ ( "display", "inline-block" ) ] ]
-            (List.append (List.map pieceHtml model.pieces) (List.singleton (boardHtml board)))
+            (List.append (List.map pieceHtml model.board.pieces) (List.singleton (boardHtml board)))
         ]
 
 

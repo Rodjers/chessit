@@ -19,6 +19,14 @@ body {
   background-color: lightyellow;
 }
 
+.square.orange {
+  background-color: orange;
+}
+
+.square.red {
+  background-color: red;
+}
+
 .row {
   font-size: 0
 }
