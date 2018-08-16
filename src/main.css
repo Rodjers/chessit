@@ -11,11 +11,11 @@ body {
 
 }
 
-.square.black {
+.square.dark {
   background-color: grey;
 }
 
-.square.white {
+.square.light {
   background-color: lightyellow;
 }
 
