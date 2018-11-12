@@ -167,7 +167,10 @@ type SquareColor
 
 
 type alias Square =
-    SquareColor
+    { color : SquareColor
+    , row : Int
+    , col : Int
+    }
 
 
 type alias Row =
@@ -180,55 +183,93 @@ type alias Board =
     }
 
 
-flipColor : Square -> Square
-flipColor square =
-    case square of
-        Light ->
-            Dark
-
-        Dark ->
-            Light
-
-        _ ->
-            square
-
-
-flipRow : Row -> Row
-flipRow row =
-    List.map flipColor row
-
-
-rowBuilder : Int -> Square -> Row
-rowBuilder size nextSquare =
-    if size <= 0 then
-        []
-    else
-        nextSquare :: rowBuilder (size - 1) (flipColor nextSquare)
-
-
-lightRow : Row
-lightRow =
-    rowBuilder 8 Light
-
-
 board : Board
 board =
-    { squares = squareBuilder 8 lightRow
+    { squares = squares
     , pieces = pieces
     }
 
 
-squareBuilder : Int -> Row -> List Row
-squareBuilder size nextRow =
-    if size <= 0 then
-        []
-    else
-        nextRow :: squareBuilder (size - 1) (flipRow nextRow)
+squares : List (List Square)
+squares =
+    [ [ { color = Light, row = 8, col = 1 }
+      , { color = Dark, row = 8, col = 2 }
+      , { color = Light, row = 8, col = 3 }
+      , { color = Dark, row = 8, col = 4 }
+      , { color = Light, row = 8, col = 5 }
+      , { color = Dark, row = 8, col = 6 }
+      , { color = Light, row = 8, col = 7 }
+      , { color = Dark, row = 8, col = 8 }
+      ]
+    , [ { color = Dark, row = 7, col = 1 }
+      , { color = Light, row = 7, col = 2 }
+      , { color = Dark, row = 7, col = 3 }
+      , { color = Light, row = 7, col = 4 }
+      , { color = Dark, row = 7, col = 5 }
+      , { color = Light, row = 7, col = 6 }
+      , { color = Dark, row = 7, col = 7 }
+      , { color = Light, row = 7, col = 8 }
+      ]
+    , [ { color = Light, row = 6, col = 1 }
+      , { color = Dark, row = 6, col = 2 }
+      , { color = Light, row = 6, col = 3 }
+      , { color = Dark, row = 6, col = 4 }
+      , { color = Light, row = 6, col = 5 }
+      , { color = Dark, row = 6, col = 6 }
+      , { color = Light, row = 6, col = 7 }
+      , { color = Dark, row = 6, col = 8 }
+      ]
+    , [ { color = Dark, row = 5, col = 1 }
+      , { color = Light, row = 5, col = 2 }
+      , { color = Dark, row = 5, col = 3 }
+      , { color = Light, row = 5, col = 4 }
+      , { color = Dark, row = 5, col = 5 }
+      , { color = Light, row = 5, col = 6 }
+      , { color = Dark, row = 5, col = 7 }
+      , { color = Light, row = 5, col = 8 }
+      ]
+    , [ { color = Light, row = 4, col = 1 }
+      , { color = Dark, row = 4, col = 2 }
+      , { color = Light, row = 4, col = 3 }
+      , { color = Dark, row = 4, col = 4 }
+      , { color = Light, row = 4, col = 5 }
+      , { color = Dark, row = 4, col = 6 }
+      , { color = Light, row = 4, col = 7 }
+      , { color = Dark, row = 4, col = 8 }
+      ]
+    , [ { color = Dark, row = 3, col = 1 }
+      , { color = Light, row = 3, col = 2 }
+      , { color = Dark, row = 3, col = 3 }
+      , { color = Light, row = 3, col = 4 }
+      , { color = Dark, row = 3, col = 5 }
+      , { color = Light, row = 3, col = 6 }
+      , { color = Dark, row = 3, col = 7 }
+      , { color = Light, row = 3, col = 8 }
+      ]
+    , [ { color = Light, row = 2, col = 1 }
+      , { color = Dark, row = 2, col = 2 }
+      , { color = Light, row = 2, col = 3 }
+      , { color = Dark, row = 2, col = 4 }
+      , { color = Light, row = 2, col = 5 }
+      , { color = Dark, row = 2, col = 6 }
+      , { color = Light, row = 2, col = 7 }
+      , { color = Dark, row = 2, col = 8 }
+      ]
+    , [ { color = Dark, row = 1, col = 1 }
+      , { color = Light, row = 1, col = 2 }
+      , { color = Dark, row = 1, col = 3 }
+      , { color = Light, row = 1, col = 4 }
+      , { color = Dark, row = 1, col = 5 }
+      , { color = Light, row = 1, col = 6 }
+      , { color = Dark, row = 1, col = 7 }
+      , { color = Light, row = 1, col = 8 }
+      ]
+    ]
 
 
 squareHtml : Square -> Html msg
 squareHtml square =
-    case square of
+    case square.color of
         Light ->
             div [ class "square light" ] []
 
@@ -257,12 +298,13 @@ boardHtml board =
 
 
 type alias Model =
-    { board : Board }
+    { board : Board, selectedPiece : Maybe Piece }
 
 
 init : ( Model, Cmd Msg )
 init =
     ( { board = board
+      , selectedPiece = Nothing
       }
     , Cmd.none
     )
@@ -277,9 +319,39 @@ type Msg
     | PieceSelected Piece
 
 
+selectRow : ( Int, Int ) -> Row -> Row
+selectRow coordinates squares =
+    List.map (selectSquare coordinates) squares
+
+
+selectSquare : ( Int, Int ) -> Square -> Square
+selectSquare coordinates square =
+    if Tuple.first coordinates == square.row && Tuple.second coordinates == square.col then
+        { square | color = Orange }
+    else if (square.row + square.col) % 2 == 0 then
+        { square | color = Dark }
+    else
+        { square | color = Light }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
+        PieceSelected piece ->
+            ( { model
+                | board =
+                    { board
+                        | squares =
+                            List.map (selectRow ( piece.row, piece.col ))
+                                model.board.squares
+                    }
+                , selectedPiece = Just piece
+              }
+            , Cmd.none
+            )
 
 
 
@@ -292,7 +364,7 @@ view model =
         [ h1 [] [ text "Get ready to chess!" ]
         , div
             [ style [ ( "display", "inline-block" ) ] ]
-            (List.append (List.map pieceHtml model.board.pieces) (List.singleton (boardHtml board)))
+            (List.append (List.map pieceHtml model.board.pieces) (List.singleton (boardHtml model.board)))
         ]
 
 
