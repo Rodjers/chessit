@@ -27,6 +27,11 @@ type PieceStatus
     | Hovering
 
 
+type GameState
+    = Ready
+    | InFlight
+
+
 type alias Piece =
     { color : PieceColor
     , variant : PieceType
@@ -164,6 +169,7 @@ type SquareColor
     | Light
     | Orange
     | Red
+    | Green
 
 
 type alias Square =
@@ -267,28 +273,31 @@ squares =
     ]
 
 
-squareHtml : Square -> Html msg
+squareHtml : Square -> Html Msg
 squareHtml square =
     case square.color of
         Light ->
-            div [ class "square light" ] []
+            div [ class "square light", onClick PieceUnselected ] []
 
         Dark ->
-            div [ class "square dark" ] []
+            div [ class "square dark", onClick PieceUnselected ] []
 
         Orange ->
-            div [ class "square orange" ] []
+            div [ class "square orange", onClick PieceUnselected ] []
 
         Red ->
-            div [ class "square red" ] []
+            div [ class "square red", (onClick (PieceCaptured square)) ] []
+
+        Green ->
+            div [ class "square green", (onClick (PiecePlaced square)) ] []
 
 
-rowHtml : Row -> Html msg
+rowHtml : Row -> Html Msg
 rowHtml row =
     div [ class "row" ] (List.map squareHtml row)
 
 
-boardHtml : Board -> Html msg
+boardHtml : Board -> Html Msg
 boardHtml board =
     div [] (List.map rowHtml board.squares)
 
@@ -298,13 +307,14 @@ boardHtml board =
 
 
 type alias Model =
-    { board : Board, selectedPiece : Maybe Piece }
+    { board : Board, selectedPiece : Maybe Piece, gameState : GameState }
 
 
 init : ( Model, Cmd Msg )
 init =
     ( { board = board
       , selectedPiece = Nothing
+      , gameState = Ready
       }
     , Cmd.none
     )
@@ -317,6 +327,9 @@ init =
 type Msg
     = NoOp
     | PieceSelected Piece
+    | PiecePlaced Square
+    | PieceCaptured Square
+    | PieceUnselected
 
 
 selectRow : ( Int, Int ) -> Row -> Row
@@ -329,6 +342,19 @@ selectSquare coordinates square =
     if Tuple.first coordinates == square.row && Tuple.second coordinates == square.col then
         { square | color = Orange }
     else if (square.row + square.col) % 2 == 0 then
+        { square | color = Dark }
+    else
+        { square | color = Light }
+
+
+resetRow : Row -> Row
+resetRow row =
+    List.map resetSquare row
+
+
+resetSquare : Square -> Square
+resetSquare square =
+    if (square.row + square.col) % 2 == 0 then
         { square | color = Dark }
     else
         { square | color = Light }
@@ -349,6 +375,22 @@ update msg model =
                                 model.board.squares
                     }
                 , selectedPiece = Just piece
+              }
+            , Cmd.none
+            )
+
+        PiecePlaced square ->
+            ( model, Cmd.none )
+
+        PieceCaptured square ->
+            ( model, Cmd.none )
+
+        PieceUnselected ->
+            ( { model
+                | board =
+                    { board
+                        | squares = List.map resetRow model.board.squares
+                    }
               }
             , Cmd.none
             )
