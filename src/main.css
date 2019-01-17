@@ -5,9 +5,9 @@ body {
 }
 
 .square {
-  display: inline-block;
   height: 100px;
   width: 100px;
+  position: absolute;
 
 }
 
@@ -41,4 +41,5 @@ body {
   height: 100px;
   line-height: 100px;
   position: absolute;
+  z-index: 10;
 }

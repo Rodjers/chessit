@@ -185,12 +185,8 @@ type alias Square =
     }
 
 
-type alias Row =
-    List Square
-
-
 type alias Board =
-    { squares : List Row
+    { squares : List Square
     , pieces : List Piece
     }
 
@@ -202,80 +198,72 @@ board =
     }
 
 
-squares : List (List Square)
+squares : List Square
 squares =
-    [ [ { color = Light, row = 8, col = 1 }
-      , { color = Dark, row = 8, col = 2 }
-      , { color = Light, row = 8, col = 3 }
-      , { color = Dark, row = 8, col = 4 }
-      , { color = Light, row = 8, col = 5 }
-      , { color = Dark, row = 8, col = 6 }
-      , { color = Light, row = 8, col = 7 }
-      , { color = Dark, row = 8, col = 8 }
-      ]
-    , [ { color = Dark, row = 7, col = 1 }
-      , { color = Light, row = 7, col = 2 }
-      , { color = Dark, row = 7, col = 3 }
-      , { color = Light, row = 7, col = 4 }
-      , { color = Dark, row = 7, col = 5 }
-      , { color = Light, row = 7, col = 6 }
-      , { color = Dark, row = 7, col = 7 }
-      , { color = Light, row = 7, col = 8 }
-      ]
-    , [ { color = Light, row = 6, col = 1 }
-      , { color = Dark, row = 6, col = 2 }
-      , { color = Light, row = 6, col = 3 }
-      , { color = Dark, row = 6, col = 4 }
-      , { color = Light, row = 6, col = 5 }
-      , { color = Dark, row = 6, col = 6 }
-      , { color = Light, row = 6, col = 7 }
-      , { color = Dark, row = 6, col = 8 }
-      ]
-    , [ { color = Dark, row = 5, col = 1 }
-      , { color = Light, row = 5, col = 2 }
-      , { color = Dark, row = 5, col = 3 }
-      , { color = Light, row = 5, col = 4 }
-      , { color = Dark, row = 5, col = 5 }
-      , { color = Light, row = 5, col = 6 }
-      , { color = Dark, row = 5, col = 7 }
-      , { color = Light, row = 5, col = 8 }
-      ]
-    , [ { color = Light, row = 4, col = 1 }
-      , { color = Dark, row = 4, col = 2 }
-      , { color = Light, row = 4, col = 3 }
-      , { color = Dark, row = 4, col = 4 }
-      , { color = Light, row = 4, col = 5 }
-      , { color = Dark, row = 4, col = 6 }
-      , { color = Light, row = 4, col = 7 }
-      , { color = Dark, row = 4, col = 8 }
-      ]
-    , [ { color = Dark, row = 3, col = 1 }
-      , { color = Light, row = 3, col = 2 }
-      , { color = Dark, row = 3, col = 3 }
-      , { color = Light, row = 3, col = 4 }
-      , { color = Dark, row = 3, col = 5 }
-      , { color = Light, row = 3, col = 6 }
-      , { color = Dark, row = 3, col = 7 }
-      , { color = Light, row = 3, col = 8 }
-      ]
-    , [ { color = Light, row = 2, col = 1 }
-      , { color = Dark, row = 2, col = 2 }
-      , { color = Light, row = 2, col = 3 }
-      , { color = Dark, row = 2, col = 4 }
-      , { color = Light, row = 2, col = 5 }
-      , { color = Dark, row = 2, col = 6 }
-      , { color = Light, row = 2, col = 7 }
-      , { color = Dark, row = 2, col = 8 }
-      ]
-    , [ { color = Dark, row = 1, col = 1 }
-      , { color = Light, row = 1, col = 2 }
-      , { color = Dark, row = 1, col = 3 }
-      , { color = Light, row = 1, col = 4 }
-      , { color = Dark, row = 1, col = 5 }
-      , { color = Light, row = 1, col = 6 }
-      , { color = Dark, row = 1, col = 7 }
-      , { color = Light, row = 1, col = 8 }
-      ]
+    [ { color = Light, row = 8, col = 1 }
+    , { color = Dark, row = 8, col = 2 }
+    , { color = Light, row = 8, col = 3 }
+    , { color = Dark, row = 8, col = 4 }
+    , { color = Light, row = 8, col = 5 }
+    , { color = Dark, row = 8, col = 6 }
+    , { color = Light, row = 8, col = 7 }
+    , { color = Dark, row = 8, col = 8 }
+    , { color = Dark, row = 7, col = 1 }
+    , { color = Light, row = 7, col = 2 }
+    , { color = Dark, row = 7, col = 3 }
+    , { color = Light, row = 7, col = 4 }
+    , { color = Dark, row = 7, col = 5 }
+    , { color = Light, row = 7, col = 6 }
+    , { color = Dark, row = 7, col = 7 }
+    , { color = Light, row = 7, col = 8 }
+    , { color = Light, row = 6, col = 1 }
+    , { color = Dark, row = 6, col = 2 }
+    , { color = Light, row = 6, col = 3 }
+    , { color = Dark, row = 6, col = 4 }
+    , { color = Light, row = 6, col = 5 }
+    , { color = Dark, row = 6, col = 6 }
+    , { color = Light, row = 6, col = 7 }
+    , { color = Dark, row = 6, col = 8 }
+    , { color = Dark, row = 5, col = 1 }
+    , { color = Light, row = 5, col = 2 }
+    , { color = Dark, row = 5, col = 3 }
+    , { color = Light, row = 5, col = 4 }
+    , { color = Dark, row = 5, col = 5 }
+    , { color = Light, row = 5, col = 6 }
+    , { color = Dark, row = 5, col = 7 }
+    , { color = Light, row = 5, col = 8 }
+    , { color = Light, row = 4, col = 1 }
+    , { color = Dark, row = 4, col = 2 }
+    , { color = Light, row = 4, col = 3 }
+    , { color = Dark, row = 4, col = 4 }
+    , { color = Light, row = 4, col = 5 }
+    , { color = Dark, row = 4, col = 6 }
+    , { color = Light, row = 4, col = 7 }
+    , { color = Dark, row = 4, col = 8 }
+    , { color = Dark, row = 3, col = 1 }
+    , { color = Light, row = 3, col = 2 }
+    , { color = Dark, row = 3, col = 3 }
+    , { color = Light, row = 3, col = 4 }
+    , { color = Dark, row = 3, col = 5 }
+    , { color = Light, row = 3, col = 6 }
+    , { color = Dark, row = 3, col = 7 }
+    , { color = Light, row = 3, col = 8 }
+    , { color = Light, row = 2, col = 1 }
+    , { color = Dark, row = 2, col = 2 }
+    , { color = Light, row = 2, col = 3 }
+    , { color = Dark, row = 2, col = 4 }
+    , { color = Light, row = 2, col = 5 }
+    , { color = Dark, row = 2, col = 6 }
+    , { color = Light, row = 2, col = 7 }
+    , { color = Dark, row = 2, col = 8 }
+    , { color = Dark, row = 1, col = 1 }
+    , { color = Light, row = 1, col = 2 }
+    , { color = Dark, row = 1, col = 3 }
+    , { color = Light, row = 1, col = 4 }
+    , { color = Dark, row = 1, col = 5 }
+    , { color = Light, row = 1, col = 6 }
+    , { color = Dark, row = 1, col = 7 }
+    , { color = Light, row = 1, col = 8 }
     ]
 
 
@@ -283,38 +271,35 @@ squareHtml : Square -> Html Msg
 squareHtml square =
     case square.color of
         Light ->
-            div [ class "square light", onClick PieceUnselected ] []
+            div [ class "square light", style (getSquareStyle square), onClick PieceUnselected ] []
 
         Dark ->
-            div [ class "square dark", onClick PieceUnselected ] []
+            div [ class "square dark", style (getSquareStyle square), onClick PieceUnselected ] []
 
         Orange ->
-            div [ class "square orange", onClick PieceUnselected ] []
+            div [ class "square orange", style (getSquareStyle square), onClick PieceUnselected ] []
 
         Red ->
-            div [ class "square red", (onClick (PieceCaptured square)) ] []
+            div [ class "square red", style (getSquareStyle square), (onClick (PieceCaptured square)) ] []
 
         Green ->
-            div [ class "square green", (onClick (PiecePlaced square)) ] []
+            div [ class "square green", style (getSquareStyle square), (onClick (PiecePlaced square)) ] []
 
 
-rowHtml : Row -> Html Msg
-rowHtml row =
-    div [ class "row" ] (List.map squareHtml row)
+getSquareStyle : Square -> List ( String, String )
+getSquareStyle square =
+    [ ( "top", Basics.toString ((9 - square.row) * 100) ++ "px" )
+    , ( "left", Basics.toString ((square.col - 1) * 100) ++ "px" )
+    ]
 
 
 boardHtml : Board -> Html Msg
 boardHtml board =
-    div [] (List.map rowHtml board.squares)
+    div [] (List.map squareHtml board.squares)
 
 
-markBoard : List Move -> List Row -> List Row
-markBoard moves rows =
-    List.map (markRow moves) rows
-
-
-markRow : List Move -> Row -> Row
-markRow moves squares =
+markBoard : List Move -> List Square -> List Square
+markBoard moves squares =
     List.map (markSquare moves) squares
 
 
@@ -408,11 +393,6 @@ type Msg
     | PieceUnselected
 
 
-selectRow : ( Int, Int ) -> Row -> Row
-selectRow coordinates squares =
-    List.map (selectSquare coordinates) squares
-
-
 selectSquare : ( Int, Int ) -> Square -> Square
 selectSquare coordinates square =
     if Tuple.first coordinates == square.row && Tuple.second coordinates == square.col then
@@ -421,11 +401,6 @@ selectSquare coordinates square =
         { square | color = Dark }
     else
         { square | color = Light }
-
-
-resetRow : Row -> Row
-resetRow row =
-    List.map resetSquare row
 
 
 resetSquare : Square -> Square
@@ -447,7 +422,7 @@ update msg model =
                 | board =
                     { board
                         | squares =
-                            markBoard (validMoves piece model.board.pieces) (List.map (selectRow ( piece.row, piece.col )) model.board.squares)
+                            markBoard (validMoves piece model.board.pieces) (List.map (selectSquare ( piece.row, piece.col )) model.board.squares)
                     }
                 , selectedPiece = Just piece
                 , validMoves = validMoves piece model.board.pieces
@@ -465,7 +440,7 @@ update msg model =
             ( { model
                 | board =
                     { board
-                        | squares = List.map resetRow model.board.squares
+                        | squares = List.map resetSquare model.board.squares
                     }
               }
             , Cmd.none
