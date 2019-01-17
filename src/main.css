@@ -26,6 +26,9 @@ body {
 .square.red {
   background-color: red;
 }
+.square.green {
+  background-color: green;
+}
 
 .row {
   font-size: 0

@@ -32,6 +32,12 @@ type GameState
     | InFlight
 
 
+type alias Move =
+    { piece : Piece
+    , distance : ( Int, Int )
+    }
+
+
 type alias Piece =
     { color : PieceColor
     , variant : PieceType
@@ -302,12 +308,81 @@ boardHtml board =
     div [] (List.map rowHtml board.squares)
 
 
+markBoard : List Move -> List Row -> List Row
+markBoard moves rows =
+    List.map (markRow moves) rows
+
+
+markRow : List Move -> Row -> Row
+markRow moves squares =
+    List.map (markSquare moves) squares
+
+
+markSquare : List Move -> Square -> Square
+markSquare moves square =
+    case List.isEmpty (List.filter (squareIsTargetOfMove square) moves) of
+        False ->
+            { square | color = Green }
+
+        True ->
+            square
+
+
+squareIsTargetOfMove : Square -> Move -> Bool
+squareIsTargetOfMove square move =
+    square.row == (move.piece.row + Tuple.first move.distance) && square.col == (move.piece.col + Tuple.second move.distance)
+
+
+validMoves : Piece -> List Piece -> List Move
+validMoves piece pieces =
+    case piece.variant of
+        Pawn ->
+            pawnMoves pieces piece
+
+        _ ->
+            []
+
+
+pawnMoves : List Piece -> Piece -> List Move
+pawnMoves pieces pawn =
+    pawnForward pieces pawn
+        |> List.append (pawnCapture pieces pawn)
+
+
+pawnForward : List Piece -> Piece -> List Move
+pawnForward pieces pawn =
+    if List.any (isInFrontOf pawn) pieces then
+        []
+    else
+        case pawn.color of
+            White ->
+                [ { piece = pawn, distance = ( 1, 0 ) } ]
+
+            Black ->
+                [ { piece = pawn, distance = ( -1, 0 ) } ]
+
+
+isInFrontOf : Piece -> Piece -> Bool
+isInFrontOf firstPiece secondPiece =
+    case firstPiece.color of
+        White ->
+            firstPiece.row + 1 == secondPiece.row
+
+        Black ->
+            firstPiece.row - 1 == secondPiece.row
+
+
+pawnCapture : List Piece -> Piece -> List Move
+pawnCapture pieces pawn =
+    []
+
+
 
 ---- MODEL ----
 
 
 type alias Model =
-    { board : Board, selectedPiece : Maybe Piece, gameState : GameState }
+    { board : Board, selectedPiece : Maybe Piece, gameState : GameState, validMoves : List Move }
 
 
 init : ( Model, Cmd Msg )
@@ -315,6 +390,7 @@ init =
     ( { board = board
       , selectedPiece = Nothing
       , gameState = Ready
+      , validMoves = []
       }
     , Cmd.none
     )
@@ -371,10 +447,10 @@ update msg model =
                 | board =
                     { board
                         | squares =
-                            List.map (selectRow ( piece.row, piece.col ))
-                                model.board.squares
+                            markBoard (validMoves piece model.board.pieces) (List.map (selectRow ( piece.row, piece.col )) model.board.squares)
                     }
                 , selectedPiece = Just piece
+                , validMoves = validMoves piece model.board.pieces
               }
             , Cmd.none
             )
