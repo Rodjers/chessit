@@ -330,13 +330,13 @@ validMoves piece pieces =
 
 pawnMoves : List Piece -> Piece -> List Move
 pawnMoves pieces pawn =
-    pawnForward pieces pawn
+    pawnMove pieces pawn
         |> List.append (pawnCapture pieces pawn)
 
 
-pawnForward : List Piece -> Piece -> List Move
-pawnForward pieces pawn =
-    if List.any (isInFrontOf pawn) pieces then
+pawnMove : List Piece -> Piece -> List Move
+pawnMove pieces pawn =
+    if List.any (isInFrontOf 1 pawn) pieces then
         []
     else
         case pawn.color of
@@ -347,14 +347,14 @@ pawnForward pieces pawn =
                 [ { piece = pawn, distance = ( -1, 0 ) } ]
 
 
-isInFrontOf : Piece -> Piece -> Bool
-isInFrontOf firstPiece secondPiece =
+isInFrontOf : Int -> Piece -> Piece -> Bool
+isInFrontOf numberOfSquares firstPiece secondPiece =
     case firstPiece.color of
         White ->
-            firstPiece.row + 1 == secondPiece.row
+            firstPiece.row + numberOfSquares == secondPiece.row
 
         Black ->
-            firstPiece.row - 1 == secondPiece.row
+            firstPiece.row - numberOfSquares == secondPiece.row
 
 
 pawnCapture : List Piece -> Piece -> List Move
