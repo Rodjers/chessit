@@ -411,40 +411,77 @@ resetSquare square =
         { square | color = Light }
 
 
+performMove : Move -> Board -> Board
+performMove move board =
+    let
+        movePiece =
+            move.piece
+    in
+        if List.length (List.filter (\s -> s.col == move.piece.col && s.row == move.piece.row) board.pieces) == 0 then
+            board
+        else
+            { board
+                | pieces =
+                    { movePiece | col = movePiece.col + Tuple.first move.distance, row = movePiece.row + Tuple.second move.distance }
+                        :: (board.pieces
+                                |> List.filter (\s -> s.col /= move.piece.col || s.row /= move.piece.row)
+                                |> List.filter (\s -> s.col /= (move.piece.col + Tuple.first move.distance) || s.row /= (move.piece.row + Tuple.second move.distance))
+                           )
+                , squares = List.map resetSquare board.squares
+            }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        NoOp ->
-            ( model, Cmd.none )
+    let
+        modelBoard =
+            model.board
+    in
+        case msg of
+            NoOp ->
+                ( model, Cmd.none )
 
-        PieceSelected piece ->
-            ( { model
-                | board =
-                    { board
-                        | squares =
-                            markBoard (validMoves piece model.board.pieces) (List.map (selectSquare ( piece.row, piece.col )) model.board.squares)
-                    }
-                , selectedPiece = Just piece
-                , validMoves = validMoves piece model.board.pieces
-              }
-            , Cmd.none
-            )
+            PieceSelected piece ->
+                ( { model
+                    | board =
+                        { modelBoard
+                            | squares =
+                                markBoard (validMoves piece model.board.pieces) (List.map (selectSquare ( piece.row, piece.col )) model.board.squares)
+                        }
+                    , selectedPiece = Just piece
+                    , validMoves = validMoves piece model.board.pieces
+                  }
+                , Cmd.none
+                )
 
-        PiecePlaced square ->
-            ( model, Cmd.none )
+            PiecePlaced square ->
+                case model.selectedPiece of
+                    Just piece ->
+                        ( { model
+                            | board = performMove { piece = piece, distance = ( square.col - piece.col, square.row - piece.row ) } model.board
+                            , validMoves = []
+                            , selectedPiece = Nothing
+                          }
+                        , Cmd.none
+                        )
 
-        PieceCaptured square ->
-            ( model, Cmd.none )
+                    Nothing ->
+                        ( model, Cmd.none )
 
-        PieceUnselected ->
-            ( { model
-                | board =
-                    { board
-                        | squares = List.map resetSquare model.board.squares
-                    }
-              }
-            , Cmd.none
-            )
+            PieceCaptured square ->
+                ( model, Cmd.none )
+
+            PieceUnselected ->
+                ( { model
+                    | board =
+                        { modelBoard
+                            | squares = List.map resetSquare model.board.squares
+                        }
+                    , selectedPiece = Nothing
+                    , validMoves = []
+                  }
+                , Cmd.none
+                )
 
 
 
