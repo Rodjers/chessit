@@ -341,20 +341,26 @@ pawnMove pieces pawn =
     else
         case pawn.color of
             White ->
-                [ { piece = pawn, distance = ( 1, 0 ) } ]
+                if pawn.row == 2 && not (List.any (isInFrontOf 2 pawn) pieces) then
+                    [ { piece = pawn, distance = ( 1, 0 ) }, { piece = pawn, distance = ( 2, 0 ) } ]
+                else
+                    [ { piece = pawn, distance = ( 1, 0 ) } ]
 
             Black ->
-                [ { piece = pawn, distance = ( -1, 0 ) } ]
+                if pawn.row == 7 && not (List.any (isInFrontOf 1 pawn) pieces) then
+                    [ { piece = pawn, distance = ( -1, 0 ) }, { piece = pawn, distance = ( -2, 0 ) } ]
+                else
+                    [ { piece = pawn, distance = ( -1, 0 ) } ]
 
 
 isInFrontOf : Int -> Piece -> Piece -> Bool
 isInFrontOf numberOfSquares firstPiece secondPiece =
     case firstPiece.color of
         White ->
-            firstPiece.row + numberOfSquares == secondPiece.row
+            firstPiece.row + numberOfSquares == secondPiece.row && firstPiece.col == secondPiece.col
 
         Black ->
-            firstPiece.row - numberOfSquares == secondPiece.row
+            firstPiece.row - numberOfSquares == secondPiece.row && firstPiece.col == secondPiece.col
 
 
 pawnCapture : List Piece -> Piece -> List Move
