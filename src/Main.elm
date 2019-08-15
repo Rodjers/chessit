@@ -315,7 +315,7 @@ markSquare moves square =
 
 squareIsTargetOfMove : Square -> Move -> Bool
 squareIsTargetOfMove square move =
-    square.row == (move.piece.row + Tuple.first move.distance) && square.col == (move.piece.col + Tuple.second move.distance)
+    square.row == (move.piece.row + Tuple.second move.distance) && square.col == (move.piece.col + Tuple.first move.distance)
 
 
 validMoves : Piece -> List Piece -> List Move
@@ -336,36 +336,32 @@ pawnMoves pieces pawn =
 
 pawnMove : List Piece -> Piece -> List Move
 pawnMove pieces pawn =
-    if List.any (isInFrontOf 1 pawn) pieces then
-        []
-    else
-        case pawn.color of
-            White ->
-                if pawn.row == 2 && not (List.any (isInFrontOf 2 pawn) pieces) then
-                    [ { piece = pawn, distance = ( 1, 0 ) }, { piece = pawn, distance = ( 2, 0 ) } ]
-                else
-                    [ { piece = pawn, distance = ( 1, 0 ) } ]
-
-            Black ->
-                if pawn.row == 7 && not (List.any (isInFrontOf 1 pawn) pieces) then
-                    [ { piece = pawn, distance = ( -1, 0 ) }, { piece = pawn, distance = ( -2, 0 ) } ]
-                else
-                    [ { piece = pawn, distance = ( -1, 0 ) } ]
-
-
-isInFrontOf : Int -> Piece -> Piece -> Bool
-isInFrontOf numberOfSquares firstPiece secondPiece =
-    case firstPiece.color of
+    case pawn.color of
         White ->
-            firstPiece.row + numberOfSquares == secondPiece.row && firstPiece.col == secondPiece.col
+            if isBlocked pieces pawn ( 0, 1 ) then
+                []
+            else if pawn.row == 2 && not (isBlocked pieces pawn ( 0, 1 )) then
+                [ { piece = pawn, distance = ( 0, 1 ) }, { piece = pawn, distance = ( 0, 2 ) } ]
+            else
+                [ { piece = pawn, distance = ( 0, 1 ) } ]
 
         Black ->
-            firstPiece.row - numberOfSquares == secondPiece.row && firstPiece.col == secondPiece.col
+            if isBlocked pieces pawn ( 0, -1 ) then
+                []
+            else if pawn.row == 7 && not (isBlocked pieces pawn ( 0, -1 )) then
+                [ { piece = pawn, distance = ( 0, -1 ) }, { piece = pawn, distance = ( 0, -2 ) } ]
+            else
+                [ { piece = pawn, distance = ( 0, -1 ) } ]
 
 
 pawnCapture : List Piece -> Piece -> List Move
 pawnCapture pieces pawn =
     []
+
+
+isBlocked : List Piece -> Piece -> ( Int, Int ) -> Bool
+isBlocked pieces piece distance =
+    List.any (\p -> p.col == (piece.col + (Tuple.first distance)) && p.row == (piece.row + (Tuple.second distance))) pieces
 
 
 
