@@ -147,11 +147,6 @@ whitePieceImage piece =
             "pieces/Chess_klt45.svg"
 
 
-rotatePiece : Piece -> Piece
-rotatePiece piece =
-    { piece | row = piece.col, col = 9 - piece.row }
-
-
 getPieceStyle : Piece -> List ( String, String )
 getPieceStyle piece =
     [ ( "transform", "translate(" ++ (getColPosition piece.col) ++ ", " ++ (getRowPosition piece.row) ++ ")" ) ]
@@ -167,25 +162,37 @@ getColPosition col =
     toString (col * 100) ++ "px"
 
 
-pieceHtml : Piece -> Html Msg
-pieceHtml piece =
+pieceHtml : Board -> Piece -> Html Msg
+pieceHtml board piece =
     case piece.color of
         White ->
             img
-                [ class "piece"
-                , style (getPieceStyle piece)
-                , src (whitePieceImage piece)
-                , onClick (PieceSelected piece)
-                ]
+                (List.append
+                    (if board.toMove == White then
+                        [ onClick (PieceSelected piece) ]
+                     else
+                        []
+                    )
+                    [ class "piece"
+                    , style (getPieceStyle piece)
+                    , src (whitePieceImage piece)
+                    ]
+                )
                 []
 
         Black ->
             img
-                [ class "piece"
-                , style (getPieceStyle piece)
-                , src (blackPieceImage piece)
-                , onClick (PieceSelected piece)
-                ]
+                (List.append
+                    (if board.toMove == Black then
+                        [ onClick (PieceSelected piece) ]
+                     else
+                        []
+                    )
+                    [ class "piece"
+                    , style (getPieceStyle piece)
+                    , src (blackPieceImage piece)
+                    ]
+                )
                 []
 
 
@@ -445,7 +452,7 @@ markSquare location squares color =
 
 getTargetSquare : Move -> Matrix.Location
 getTargetSquare move =
-    ( move.piece.row + Tuple.second move.distance, move.piece.col + Tuple.first move.distance )
+    ( move.piece.row + Tuple.first move.distance, move.piece.col + Tuple.second move.distance )
 
 
 squareIsTargetOfMove : Square -> Move -> Bool
@@ -466,44 +473,44 @@ validMoves piece board =
 pawnMoves : Board -> Piece -> List Move
 pawnMoves board pawn =
     pawnMove board pawn
-        |> List.append (pawnCapture initialBoard pawn)
+        |> List.append (pawnCapture board pawn)
 
 
 pawnMove : Board -> Piece -> List Move
 pawnMove board pawn =
     case pawn.color of
         White ->
-            if isBlocked board pawn ( 0, 1 ) then
+            if isBlocked board pawn ( 1, 0 ) then
                 []
-            else if pawn.row == 1 && not (isBlocked board pawn ( 0, 1 )) then
-                [ { piece = pawn, distance = ( 0, 1 ) }, { piece = pawn, distance = ( 0, 2 ) } ]
+            else if pawn.row == 1 && not (isBlocked board pawn ( 2, 0 )) then
+                [ { piece = pawn, distance = ( 1, 0 ) }, { piece = pawn, distance = ( 2, 0 ) } ]
             else
-                [ { piece = pawn, distance = ( 0, 1 ) } ]
+                [ { piece = pawn, distance = ( 1, 0 ) } ]
 
         Black ->
-            if isBlocked board pawn ( 0, -1 ) then
+            if isBlocked board pawn ( -1, 0 ) then
                 []
-            else if pawn.row == 6 && not (isBlocked board pawn ( 0, -1 )) then
-                [ { piece = pawn, distance = ( 0, -1 ) }, { piece = pawn, distance = ( 0, -2 ) } ]
+            else if pawn.row == 6 && not (isBlocked board pawn ( -2, 0 )) then
+                [ { piece = pawn, distance = ( -1, 0 ) }, { piece = pawn, distance = ( -2, 0 ) } ]
             else
-                [ { piece = pawn, distance = ( 0, -1 ) } ]
+                [ { piece = pawn, distance = ( -1, 0 ) } ]
 
 
 pawnCapture : Board -> Piece -> List Move
 pawnCapture board pawn =
     case pawn.color of
         White ->
-            case getPiece board ( (pawn.col - 1), (pawn.row + 1) ) of
+            case getPiece board ( (pawn.row + 1), (pawn.col + 1) ) of
                 Just piece ->
-                    [ { piece = piece, distance = ( 0, 1 ) } ]
+                    [ { piece = pawn, distance = ( 1, 1 ) } ]
 
                 Nothing ->
                     []
 
         Black ->
-            case getPiece board ( (pawn.col - 1), (pawn.row - 1) ) of
+            case getPiece board ( (pawn.row - 1), (pawn.col - 1) ) of
                 Just piece ->
-                    [ { piece = piece, distance = ( 0, -1 ) } ]
+                    [ { piece = piece, distance = ( -1, -1 ) } ]
 
                 Nothing ->
                     []
@@ -511,7 +518,7 @@ pawnCapture board pawn =
 
 isBlocked : Board -> Piece -> ( Int, Int ) -> Bool
 isBlocked board piece distance =
-    case getPiece board (Matrix.loc (piece.row + (Tuple.second distance)) (piece.col + (Tuple.first distance))) of
+    case getPiece board (Matrix.loc (piece.row + (Tuple.first distance)) (piece.col + (Tuple.second distance))) of
         Just piece ->
             True
 
@@ -630,7 +637,7 @@ update msg model =
                 case model.selectedPiece of
                     Just piece ->
                         ( { model
-                            | board = performMove { piece = piece, distance = ( square.col - piece.col, square.row - piece.row ) } model.board
+                            | board = performMove { piece = piece, distance = ( square.row - piece.row, square.col - piece.col ) } model.board
                             , selectedPiece = Nothing
                           }
                         , Cmd.none
@@ -656,7 +663,7 @@ view model =
         [ h1 [] [ text "Get ready to chess!" ]
         , div
             [ style [ ( "display", "inline-block" ) ] ]
-            (List.append (List.map pieceHtml (getPieces model.board)) (List.singleton (boardHtml model.board)))
+            (List.append (List.map (pieceHtml model.board) (getPieces model.board)) (List.singleton (boardHtml model.board)))
         ]
 
 
