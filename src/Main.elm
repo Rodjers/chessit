@@ -3,6 +3,7 @@ module Main exposing (..)
 import Html exposing (Html, text, div, h1, img)
 import Html.Attributes exposing (src, height, width, class, style, alt)
 import Html.Events exposing (onClick)
+import Matrix exposing (Matrix)
 
 
 ---- PIECES ----
@@ -48,41 +49,58 @@ type alias Piece =
     }
 
 
-pieces : List Piece
-pieces =
-    [ { id = "a1", color = White, variant = Rook, row = 1, col = 1, status = Placed }
-    , { id = "b1", color = White, variant = Knight, row = 1, col = 2, status = Placed }
-    , { id = "c1", color = White, variant = Bishop, row = 1, col = 3, status = Placed }
-    , { id = "d1", color = White, variant = Queen, row = 1, col = 4, status = Placed }
-    , { id = "e1", color = White, variant = King, row = 1, col = 5, status = Placed }
-    , { id = "f1", color = White, variant = Bishop, row = 1, col = 6, status = Placed }
-    , { id = "g1", color = White, variant = Knight, row = 1, col = 7, status = Placed }
-    , { id = "h1", color = White, variant = Rook, row = 1, col = 8, status = Placed }
-    , { id = "a2", color = White, variant = Pawn, row = 2, col = 1, status = Placed }
-    , { id = "b2", color = White, variant = Pawn, row = 2, col = 2, status = Placed }
-    , { id = "c2", color = White, variant = Pawn, row = 2, col = 3, status = Placed }
-    , { id = "d2", color = White, variant = Pawn, row = 2, col = 4, status = Placed }
-    , { id = "e2", color = White, variant = Pawn, row = 2, col = 5, status = Placed }
-    , { id = "f2", color = White, variant = Pawn, row = 2, col = 6, status = Placed }
-    , { id = "g2", color = White, variant = Pawn, row = 2, col = 7, status = Placed }
-    , { id = "h2", color = White, variant = Pawn, row = 2, col = 8, status = Placed }
-    , { id = "a7", color = Black, variant = Pawn, row = 7, col = 1, status = Placed }
-    , { id = "b7", color = Black, variant = Pawn, row = 7, col = 2, status = Placed }
-    , { id = "c7", color = Black, variant = Pawn, row = 7, col = 3, status = Placed }
-    , { id = "d7", color = Black, variant = Pawn, row = 7, col = 4, status = Placed }
-    , { id = "e7", color = Black, variant = Pawn, row = 7, col = 5, status = Placed }
-    , { id = "f7", color = Black, variant = Pawn, row = 7, col = 6, status = Placed }
-    , { id = "g7", color = Black, variant = Pawn, row = 7, col = 7, status = Placed }
-    , { id = "h7", color = Black, variant = Pawn, row = 7, col = 8, status = Placed }
-    , { id = "a8", color = Black, variant = Rook, row = 8, col = 1, status = Placed }
-    , { id = "b8", color = Black, variant = Knight, row = 8, col = 2, status = Placed }
-    , { id = "c8", color = Black, variant = Bishop, row = 8, col = 3, status = Placed }
-    , { id = "d8", color = Black, variant = Queen, row = 8, col = 4, status = Placed }
-    , { id = "e8", color = Black, variant = King, row = 8, col = 5, status = Placed }
-    , { id = "f8", color = Black, variant = Bishop, row = 8, col = 6, status = Placed }
-    , { id = "g8", color = Black, variant = Knight, row = 8, col = 7, status = Placed }
-    , { id = "h8", color = Black, variant = Rook, row = 8, col = 8, status = Placed }
-    ]
+type alias MatrixPiece =
+    { color : PieceColor
+    , variant : PieceType
+    , status : PieceStatus
+    , id : String
+    }
+
+
+initialPieces : Matrix (Maybe MatrixPiece)
+initialPieces =
+    Matrix.fromList
+        [ [ Just { id = "a1", color = White, variant = Rook, status = Placed }
+          , Just { id = "b1", color = White, variant = Knight, status = Placed }
+          , Just { id = "c1", color = White, variant = Bishop, status = Placed }
+          , Just { id = "d1", color = White, variant = Queen, status = Placed }
+          , Just { id = "e1", color = White, variant = King, status = Placed }
+          , Just { id = "f1", color = White, variant = Bishop, status = Placed }
+          , Just { id = "g1", color = White, variant = Knight, status = Placed }
+          , Just { id = "h1", color = White, variant = Rook, status = Placed }
+          ]
+        , [ Just { id = "a2", color = White, variant = Pawn, status = Placed }
+          , Just { id = "b2", color = White, variant = Pawn, status = Placed }
+          , Just { id = "c2", color = White, variant = Pawn, status = Placed }
+          , Just { id = "d2", color = White, variant = Pawn, status = Placed }
+          , Just { id = "e2", color = White, variant = Pawn, status = Placed }
+          , Just { id = "f2", color = White, variant = Pawn, status = Placed }
+          , Just { id = "g2", color = White, variant = Pawn, status = Placed }
+          , Just { id = "h2", color = White, variant = Pawn, status = Placed }
+          ]
+        , [ Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing ]
+        , [ Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing ]
+        , [ Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing ]
+        , [ Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing ]
+        , [ Just { id = "a7", color = Black, variant = Pawn, status = Placed }
+          , Just { id = "b7", color = Black, variant = Pawn, status = Placed }
+          , Just { id = "c7", color = Black, variant = Pawn, status = Placed }
+          , Just { id = "d7", color = Black, variant = Pawn, status = Placed }
+          , Just { id = "e7", color = Black, variant = Pawn, status = Placed }
+          , Just { id = "f7", color = Black, variant = Pawn, status = Placed }
+          , Just { id = "g7", color = Black, variant = Pawn, status = Placed }
+          , Just { id = "h7", color = Black, variant = Pawn, status = Placed }
+          ]
+        , [ Just { id = "a8", color = Black, variant = Rook, status = Placed }
+          , Just { id = "b8", color = Black, variant = Knight, status = Placed }
+          , Just { id = "c8", color = Black, variant = Bishop, status = Placed }
+          , Just { id = "d8", color = Black, variant = Queen, status = Placed }
+          , Just { id = "e8", color = Black, variant = King, status = Placed }
+          , Just { id = "f8", color = Black, variant = Bishop, status = Placed }
+          , Just { id = "g8", color = Black, variant = Knight, status = Placed }
+          , Just { id = "h8", color = Black, variant = Rook, status = Placed }
+          ]
+        ]
 
 
 blackPieceImage : Piece -> String
@@ -129,40 +147,52 @@ whitePieceImage piece =
             "pieces/Chess_klt45.svg"
 
 
-rotatePiece : Piece -> Piece
-rotatePiece piece =
-    { piece | row = piece.col, col = 9 - piece.row }
-
-
 getPieceStyle : Piece -> List ( String, String )
 getPieceStyle piece =
-    [ ( "transform", "translate(" ++ getPosition piece.row ++ ", " ++ getPosition piece.col ++ ")" ) ]
+    [ ( "transform", "translate(" ++ (getColPosition piece.col) ++ ", " ++ (getRowPosition piece.row) ++ ")" ) ]
 
 
-getPosition : Int -> String
-getPosition float =
-    toString ((float - 1) * 100) ++ "px"
+getRowPosition : Int -> String
+getRowPosition row =
+    toString ((7 - row) * 100) ++ "px"
 
 
-pieceHtml : Piece -> Html Msg
-pieceHtml piece =
+getColPosition : Int -> String
+getColPosition col =
+    toString (col * 100) ++ "px"
+
+
+pieceHtml : Board -> Piece -> Html Msg
+pieceHtml board piece =
     case piece.color of
         White ->
             img
-                [ class "piece"
-                , style (getPieceStyle (rotatePiece piece))
-                , src (whitePieceImage piece)
-                , onClick (PieceSelected piece)
-                ]
+                (List.append
+                    (if board.toMove == White then
+                        [ onClick (PieceSelected piece) ]
+                     else
+                        []
+                    )
+                    [ class "piece"
+                    , style (getPieceStyle piece)
+                    , src (whitePieceImage piece)
+                    ]
+                )
                 []
 
         Black ->
             img
-                [ class "piece"
-                , style (getPieceStyle (rotatePiece piece))
-                , src (blackPieceImage piece)
-                , onClick (PieceSelected piece)
-                ]
+                (List.append
+                    (if board.toMove == Black then
+                        [ onClick (PieceSelected piece) ]
+                     else
+                        []
+                    )
+                    [ class "piece"
+                    , style (getPieceStyle piece)
+                    , src (blackPieceImage piece)
+                    ]
+                )
                 []
 
 
@@ -178,6 +208,10 @@ type SquareColor
     | Green
 
 
+type alias SquareMatrix =
+    Matrix MatrixSquare
+
+
 type alias Square =
     { color : SquareColor
     , row : Int
@@ -185,86 +219,194 @@ type alias Square =
     }
 
 
+type alias MatrixSquare =
+    { color : SquareColor
+    }
+
+
 type alias Board =
-    { squares : List Square
-    , pieces : List Piece
+    { squares : SquareMatrix
+    , pieces : Matrix (Maybe MatrixPiece)
+    , toMove : PieceColor
     }
 
 
-board : Board
-board =
-    { squares = squares
-    , pieces = pieces
+initialBoard : Board
+initialBoard =
+    { squares = initialSquares
+    , pieces = initialPieces
+    , toMove = White
     }
 
 
-squares : List Square
-squares =
-    [ { color = Light, row = 8, col = 1 }
-    , { color = Dark, row = 8, col = 2 }
-    , { color = Light, row = 8, col = 3 }
-    , { color = Dark, row = 8, col = 4 }
-    , { color = Light, row = 8, col = 5 }
-    , { color = Dark, row = 8, col = 6 }
-    , { color = Light, row = 8, col = 7 }
-    , { color = Dark, row = 8, col = 8 }
-    , { color = Dark, row = 7, col = 1 }
-    , { color = Light, row = 7, col = 2 }
-    , { color = Dark, row = 7, col = 3 }
-    , { color = Light, row = 7, col = 4 }
-    , { color = Dark, row = 7, col = 5 }
-    , { color = Light, row = 7, col = 6 }
-    , { color = Dark, row = 7, col = 7 }
-    , { color = Light, row = 7, col = 8 }
-    , { color = Light, row = 6, col = 1 }
-    , { color = Dark, row = 6, col = 2 }
-    , { color = Light, row = 6, col = 3 }
-    , { color = Dark, row = 6, col = 4 }
-    , { color = Light, row = 6, col = 5 }
-    , { color = Dark, row = 6, col = 6 }
-    , { color = Light, row = 6, col = 7 }
-    , { color = Dark, row = 6, col = 8 }
-    , { color = Dark, row = 5, col = 1 }
-    , { color = Light, row = 5, col = 2 }
-    , { color = Dark, row = 5, col = 3 }
-    , { color = Light, row = 5, col = 4 }
-    , { color = Dark, row = 5, col = 5 }
-    , { color = Light, row = 5, col = 6 }
-    , { color = Dark, row = 5, col = 7 }
-    , { color = Light, row = 5, col = 8 }
-    , { color = Light, row = 4, col = 1 }
-    , { color = Dark, row = 4, col = 2 }
-    , { color = Light, row = 4, col = 3 }
-    , { color = Dark, row = 4, col = 4 }
-    , { color = Light, row = 4, col = 5 }
-    , { color = Dark, row = 4, col = 6 }
-    , { color = Light, row = 4, col = 7 }
-    , { color = Dark, row = 4, col = 8 }
-    , { color = Dark, row = 3, col = 1 }
-    , { color = Light, row = 3, col = 2 }
-    , { color = Dark, row = 3, col = 3 }
-    , { color = Light, row = 3, col = 4 }
-    , { color = Dark, row = 3, col = 5 }
-    , { color = Light, row = 3, col = 6 }
-    , { color = Dark, row = 3, col = 7 }
-    , { color = Light, row = 3, col = 8 }
-    , { color = Light, row = 2, col = 1 }
-    , { color = Dark, row = 2, col = 2 }
-    , { color = Light, row = 2, col = 3 }
-    , { color = Dark, row = 2, col = 4 }
-    , { color = Light, row = 2, col = 5 }
-    , { color = Dark, row = 2, col = 6 }
-    , { color = Light, row = 2, col = 7 }
-    , { color = Dark, row = 2, col = 8 }
-    , { color = Dark, row = 1, col = 1 }
-    , { color = Light, row = 1, col = 2 }
-    , { color = Dark, row = 1, col = 3 }
-    , { color = Light, row = 1, col = 4 }
-    , { color = Dark, row = 1, col = 5 }
-    , { color = Light, row = 1, col = 6 }
-    , { color = Dark, row = 1, col = 7 }
-    , { color = Light, row = 1, col = 8 }
-    ]
+getPieces : Board -> List Piece
+getPieces board =
+    (Matrix.flatten (Matrix.mapWithLocation toPiece board.pieces))
+        |> List.filterMap (\p -> p)
+
+
+getPiece : Board -> Matrix.Location -> Maybe Piece
+getPiece board location =
+    let
+        maybeMaybeMatrixPiece =
+            Matrix.get location board.pieces
+    in
+        case maybeMaybeMatrixPiece of
+            Just maybeMatrixPiece ->
+                case maybeMatrixPiece of
+                    Just matrixPiece ->
+                        Just
+                            { status = matrixPiece.status
+                            , color = matrixPiece.color
+                            , id = matrixPiece.id
+                            , variant = matrixPiece.variant
+                            , col = Matrix.col location
+                            , row = Matrix.row location
+                            }
+
+                    Nothing ->
+                        Nothing
+
+            Nothing ->
+                Nothing
+
+
+setPiece : Board -> Maybe Piece -> Matrix.Location -> Board
+setPiece board piece location =
+    case piece of
+        Just piece ->
+            { board
+                | pieces =
+                    Matrix.set location (Just { color = piece.color, status = piece.status, variant = piece.variant, id = piece.id }) board.pieces
+            }
+
+        Nothing ->
+            { board
+                | pieces =
+                    Matrix.set location Nothing board.pieces
+            }
+
+
+getSquares : Board -> List Square
+getSquares board =
+    Matrix.flatten (Matrix.mapWithLocation toSquare board.squares)
+
+
+toSquare : Matrix.Location -> MatrixSquare -> Square
+toSquare location matrixSquare =
+    { color = matrixSquare.color
+    , col = Matrix.col location
+    , row = Matrix.row location
+    }
+
+
+toSquareMatrix : List Square -> Matrix MatrixSquare
+toSquareMatrix inSquares =
+    List.foldl (\s m -> Matrix.set (Matrix.loc s.col s.row) { color = s.color } m) initialSquares inSquares
+
+
+toPiece : Matrix.Location -> Maybe MatrixPiece -> Maybe Piece
+toPiece location matrixPiece =
+    case matrixPiece of
+        Just piece ->
+            Just
+                { color = piece.color
+                , variant = piece.variant
+                , status = piece.status
+                , id = piece.id
+                , col = Matrix.col location
+                , row = Matrix.row location
+                }
+
+        Nothing ->
+            Nothing
+
+
+toPieceMatrix : List Piece -> Matrix (Maybe MatrixPiece)
+toPieceMatrix inPieces =
+    let
+        initialMatrix =
+            Matrix.matrix 8 8 (\n -> Nothing)
+    in
+        List.foldl (\p m -> Matrix.set (Matrix.loc p.col p.row) (Just { color = p.color, variant = p.variant, status = p.status, id = p.id }) m) initialPieces inPieces
+
+
+initialSquares : Matrix MatrixSquare
+initialSquares =
+    Matrix.fromList
+        [ [ { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          ]
+        , [ { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          ]
+        , [ { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          ]
+        , [ { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          ]
+        , [ { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          ]
+        , [ { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          ]
+        , [ { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          ]
+        , [ { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          , { color = Dark }
+          , { color = Light }
+          ]
+        ]
 
 
 squareHtml : Square -> Html Msg
@@ -288,29 +430,29 @@ squareHtml square =
 
 getSquareStyle : Square -> List ( String, String )
 getSquareStyle square =
-    [ ( "top", Basics.toString ((9 - square.row) * 100) ++ "px" )
-    , ( "left", Basics.toString ((square.col - 1) * 100) ++ "px" )
+    [ ( "top", Basics.toString ((8 - square.row) * 100) ++ "px" )
+    , ( "left", Basics.toString ((square.col) * 100) ++ "px" )
     ]
 
 
 boardHtml : Board -> Html Msg
 boardHtml board =
-    div [] (List.map squareHtml board.squares)
+    div [] (List.map squareHtml (getSquares board))
 
 
-markBoard : List Move -> List Square -> List Square
-markBoard moves squares =
-    List.map (markSquare moves) squares
+markSquares : List Move -> SquareMatrix -> SquareMatrix
+markSquares moves squares =
+    List.foldl (\m s -> markSquare (getTargetSquare m) s Green) squares moves
 
 
-markSquare : List Move -> Square -> Square
-markSquare moves square =
-    case List.isEmpty (List.filter (squareIsTargetOfMove square) moves) of
-        False ->
-            { square | color = Green }
+markSquare : Matrix.Location -> SquareMatrix -> SquareColor -> SquareMatrix
+markSquare location squares color =
+    Matrix.set location { color = color } squares
 
-        True ->
-            square
+
+getTargetSquare : Move -> Matrix.Location
+getTargetSquare move =
+    ( move.piece.row + Tuple.first move.distance, move.piece.col + Tuple.second move.distance )
 
 
 squareIsTargetOfMove : Square -> Move -> Bool
@@ -318,50 +460,88 @@ squareIsTargetOfMove square move =
     square.row == (move.piece.row + Tuple.second move.distance) && square.col == (move.piece.col + Tuple.first move.distance)
 
 
-validMoves : Piece -> List Piece -> List Move
-validMoves piece pieces =
+validMoves : Piece -> Board -> List Move
+validMoves piece board =
     case piece.variant of
         Pawn ->
-            pawnMoves pieces piece
+            pawnMoves board piece
 
         _ ->
             []
 
 
-pawnMoves : List Piece -> Piece -> List Move
-pawnMoves pieces pawn =
-    pawnMove pieces pawn
-        |> List.append (pawnCapture pieces pawn)
+pawnMoves : Board -> Piece -> List Move
+pawnMoves board pawn =
+    pawnMove board pawn
+        |> List.append (pawnCapture board pawn)
 
 
-pawnMove : List Piece -> Piece -> List Move
-pawnMove pieces pawn =
+pawnMove : Board -> Piece -> List Move
+pawnMove board pawn =
     case pawn.color of
         White ->
-            if isBlocked pieces pawn ( 0, 1 ) then
+            if isBlocked board pawn ( 1, 0 ) then
                 []
-            else if pawn.row == 2 && not (isBlocked pieces pawn ( 0, 1 )) then
-                [ { piece = pawn, distance = ( 0, 1 ) }, { piece = pawn, distance = ( 0, 2 ) } ]
+            else if pawn.row == 1 && not (isBlocked board pawn ( 2, 0 )) then
+                [ { piece = pawn, distance = ( 1, 0 ) }, { piece = pawn, distance = ( 2, 0 ) } ]
             else
-                [ { piece = pawn, distance = ( 0, 1 ) } ]
+                [ { piece = pawn, distance = ( 1, 0 ) } ]
 
         Black ->
-            if isBlocked pieces pawn ( 0, -1 ) then
+            if isBlocked board pawn ( -1, 0 ) then
                 []
-            else if pawn.row == 7 && not (isBlocked pieces pawn ( 0, -1 )) then
-                [ { piece = pawn, distance = ( 0, -1 ) }, { piece = pawn, distance = ( 0, -2 ) } ]
+            else if pawn.row == 6 && not (isBlocked board pawn ( -2, 0 )) then
+                [ { piece = pawn, distance = ( -1, 0 ) }, { piece = pawn, distance = ( -2, 0 ) } ]
             else
-                [ { piece = pawn, distance = ( 0, -1 ) } ]
+                [ { piece = pawn, distance = ( -1, 0 ) } ]
 
 
-pawnCapture : List Piece -> Piece -> List Move
-pawnCapture pieces pawn =
-    []
+pawnCapture : Board -> Piece -> List Move
+pawnCapture board pawn =
+    case pawn.color of
+        White ->
+            case getPiece board ( (pawn.row + 1), (pawn.col + 1) ) of
+                Just piece ->
+                    [ { piece = pawn, distance = ( 1, 1 ) } ]
+
+                Nothing ->
+                    []
+
+        Black ->
+            case getPiece board ( (pawn.row - 1), (pawn.col - 1) ) of
+                Just piece ->
+                    [ { piece = piece, distance = ( -1, -1 ) } ]
+
+                Nothing ->
+                    []
 
 
-isBlocked : List Piece -> Piece -> ( Int, Int ) -> Bool
-isBlocked pieces piece distance =
-    List.any (\p -> p.col == (piece.col + (Tuple.first distance)) && p.row == (piece.row + (Tuple.second distance))) pieces
+isBlocked : Board -> Piece -> ( Int, Int ) -> Bool
+isBlocked board piece distance =
+    case getPiece board (Matrix.loc (piece.row + (Tuple.first distance)) (piece.col + (Tuple.second distance))) of
+        Just piece ->
+            True
+
+        Nothing ->
+            False
+
+
+clearModel : Model -> Model
+clearModel model =
+    let
+        modelBoard =
+            model.board
+
+        toMove =
+            model.board.toMove
+    in
+        { model
+            | board =
+                { modelBoard
+                    | squares = initialSquares
+                }
+            , selectedPiece = Nothing
+        }
 
 
 
@@ -369,15 +549,14 @@ isBlocked pieces piece distance =
 
 
 type alias Model =
-    { board : Board, selectedPiece : Maybe Piece, gameState : GameState, validMoves : List Move }
+    { board : Board, selectedPiece : Maybe Piece, gameState : GameState }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { board = board
+    ( { board = initialBoard
       , selectedPiece = Nothing
       , gameState = Ready
-      , validMoves = []
       }
     , Cmd.none
     )
@@ -395,14 +574,9 @@ type Msg
     | PieceUnselected
 
 
-selectSquare : ( Int, Int ) -> Square -> Square
-selectSquare coordinates square =
-    if Tuple.first coordinates == square.row && Tuple.second coordinates == square.col then
-        { square | color = Orange }
-    else if (square.row + square.col) % 2 == 0 then
-        { square | color = Dark }
-    else
-        { square | color = Light }
+selectSquare : ( Int, Int ) -> SquareMatrix -> SquareMatrix
+selectSquare coordinates squares =
+    squares
 
 
 resetSquare : Square -> Square
@@ -416,21 +590,19 @@ resetSquare square =
 performMove : Move -> Board -> Board
 performMove move board =
     let
-        movePiece =
-            move.piece
+        newBoard =
+            setPiece (setPiece board (Just move.piece) (getTargetSquare move)) Nothing (Matrix.loc move.piece.row move.piece.col)
     in
-        if List.length (List.filter (\s -> s.col == move.piece.col && s.row == move.piece.row) board.pieces) == 0 then
-            board
-        else
-            { board
-                | pieces =
-                    { movePiece | col = movePiece.col + Tuple.first move.distance, row = movePiece.row + Tuple.second move.distance }
-                        :: (board.pieces
-                                |> List.filter (\s -> s.col /= move.piece.col || s.row /= move.piece.row)
-                                |> List.filter (\s -> s.col /= (move.piece.col + Tuple.first move.distance) || s.row /= (move.piece.row + Tuple.second move.distance))
-                           )
-                , squares = List.map resetSquare board.squares
-            }
+        { newBoard
+            | squares = initialSquares
+            , toMove =
+                case board.toMove of
+                    White ->
+                        Black
+
+                    Black ->
+                        White
+        }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -438,30 +610,34 @@ update msg model =
     let
         modelBoard =
             model.board
+
+        toMove =
+            model.board.toMove
     in
         case msg of
             NoOp ->
                 ( model, Cmd.none )
 
             PieceSelected piece ->
-                ( { model
-                    | board =
-                        { modelBoard
-                            | squares =
-                                markBoard (validMoves piece model.board.pieces) (List.map (selectSquare ( piece.row, piece.col )) model.board.squares)
-                        }
-                    , selectedPiece = Just piece
-                    , validMoves = validMoves piece model.board.pieces
-                  }
-                , Cmd.none
-                )
+                if piece.color == toMove then
+                    ( { model
+                        | board =
+                            { modelBoard
+                                | squares =
+                                    markSquares (validMoves piece model.board) (markSquare ( piece.row, piece.col ) initialSquares Orange)
+                            }
+                        , selectedPiece = Just piece
+                      }
+                    , Cmd.none
+                    )
+                else
+                    ( clearModel model, Cmd.none )
 
             PiecePlaced square ->
                 case model.selectedPiece of
                     Just piece ->
                         ( { model
-                            | board = performMove { piece = piece, distance = ( square.col - piece.col, square.row - piece.row ) } model.board
-                            , validMoves = []
+                            | board = performMove { piece = piece, distance = ( square.row - piece.row, square.col - piece.col ) } model.board
                             , selectedPiece = Nothing
                           }
                         , Cmd.none
@@ -474,16 +650,7 @@ update msg model =
                 ( model, Cmd.none )
 
             PieceUnselected ->
-                ( { model
-                    | board =
-                        { modelBoard
-                            | squares = List.map resetSquare model.board.squares
-                        }
-                    , selectedPiece = Nothing
-                    , validMoves = []
-                  }
-                , Cmd.none
-                )
+                ( clearModel model, Cmd.none )
 
 
 
@@ -496,7 +663,7 @@ view model =
         [ h1 [] [ text "Get ready to chess!" ]
         , div
             [ style [ ( "display", "inline-block" ) ] ]
-            (List.append (List.map pieceHtml model.board.pieces) (List.singleton (boardHtml model.board)))
+            (List.append (List.map (pieceHtml model.board) (getPieces model.board)) (List.singleton (boardHtml model.board)))
         ]
 
 
