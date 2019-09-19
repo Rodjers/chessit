@@ -509,7 +509,12 @@ pawnCapture board pawn =
 
 isBlocked : Board -> Piece -> ( Int, Int ) -> Bool
 isBlocked board piece distance =
-    List.any (\p -> p.col == (piece.col + (Tuple.first distance)) && p.row == (piece.row + (Tuple.second distance))) (getPieces board)
+    case getPiece board (Matrix.loc (piece.row + (Tuple.second distance)) (piece.col + (Tuple.first distance))) of
+        Just piece ->
+            True
+
+        Nothing ->
+            False
 
 
 
@@ -517,7 +522,7 @@ isBlocked board piece distance =
 
 
 type alias Model =
-    { board : Board, selectedPiece : Maybe Piece, gameState : GameState, validMoves : List Move }
+    { board : Board, selectedPiece : Maybe Piece, gameState : GameState }
 
 
 init : ( Model, Cmd Msg )
@@ -525,7 +530,6 @@ init =
     ( { board = initialBoard
       , selectedPiece = Nothing
       , gameState = Ready
-      , validMoves = []
       }
     , Cmd.none
     )
@@ -558,7 +562,13 @@ resetSquare square =
 
 performMove : Move -> Board -> Board
 performMove move board =
-    setPiece (setPiece board (Just move.piece) (getTargetSquare move)) Nothing (Matrix.loc move.piece.row move.piece.col)
+    let
+        newBoard =
+            setPiece (setPiece board (Just move.piece) (getTargetSquare move)) Nothing (Matrix.loc move.piece.row move.piece.col)
+    in
+        { newBoard
+            | squares = initialSquares
+        }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -579,7 +589,6 @@ update msg model =
                                 markSquares (validMoves piece model.board) (markSquare ( piece.row, piece.col ) initialSquares Orange)
                         }
                     , selectedPiece = Just piece
-                    , validMoves = validMoves piece model.board
                   }
                 , Cmd.none
                 )
@@ -589,7 +598,6 @@ update msg model =
                     Just piece ->
                         ( { model
                             | board = performMove { piece = piece, distance = ( square.col - piece.col, square.row - piece.row ) } model.board
-                            , validMoves = []
                             , selectedPiece = Nothing
                           }
                         , Cmd.none
@@ -608,7 +616,6 @@ update msg model =
                             | squares = initialSquares
                         }
                     , selectedPiece = Nothing
-                    , validMoves = []
                   }
                 , Cmd.none
                 )
