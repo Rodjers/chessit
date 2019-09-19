@@ -220,6 +220,7 @@ type alias MatrixSquare =
 type alias Board =
     { squares : SquareMatrix
     , pieces : Matrix (Maybe MatrixPiece)
+    , toMove : PieceColor
     }
 
 
@@ -227,6 +228,7 @@ initialBoard : Board
 initialBoard =
     { squares = initialSquares
     , pieces = initialPieces
+    , toMove = White
     }
 
 
@@ -517,6 +519,24 @@ isBlocked board piece distance =
             False
 
 
+clearModel : Model -> Model
+clearModel model =
+    let
+        modelBoard =
+            model.board
+
+        toMove =
+            model.board.toMove
+    in
+        { model
+            | board =
+                { modelBoard
+                    | squares = initialSquares
+                }
+            , selectedPiece = Nothing
+        }
+
+
 
 ---- MODEL ----
 
@@ -568,6 +588,13 @@ performMove move board =
     in
         { newBoard
             | squares = initialSquares
+            , toMove =
+                case board.toMove of
+                    White ->
+                        Black
+
+                    Black ->
+                        White
         }
 
 
@@ -576,22 +603,28 @@ update msg model =
     let
         modelBoard =
             model.board
+
+        toMove =
+            model.board.toMove
     in
         case msg of
             NoOp ->
                 ( model, Cmd.none )
 
             PieceSelected piece ->
-                ( { model
-                    | board =
-                        { modelBoard
-                            | squares =
-                                markSquares (validMoves piece model.board) (markSquare ( piece.row, piece.col ) initialSquares Orange)
-                        }
-                    , selectedPiece = Just piece
-                  }
-                , Cmd.none
-                )
+                if piece.color == toMove then
+                    ( { model
+                        | board =
+                            { modelBoard
+                                | squares =
+                                    markSquares (validMoves piece model.board) (markSquare ( piece.row, piece.col ) initialSquares Orange)
+                            }
+                        , selectedPiece = Just piece
+                      }
+                    , Cmd.none
+                    )
+                else
+                    ( clearModel model, Cmd.none )
 
             PiecePlaced square ->
                 case model.selectedPiece of
@@ -610,15 +643,7 @@ update msg model =
                 ( model, Cmd.none )
 
             PieceUnselected ->
-                ( { model
-                    | board =
-                        { modelBoard
-                            | squares = initialSquares
-                        }
-                    , selectedPiece = Nothing
-                  }
-                , Cmd.none
-                )
+                ( clearModel model, Cmd.none )
 
 
 
